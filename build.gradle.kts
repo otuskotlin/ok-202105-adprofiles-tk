@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") apply false
+    id("org.openapi.generator") apply false
 }
 
 group = "ru.tk.adprofiles"
