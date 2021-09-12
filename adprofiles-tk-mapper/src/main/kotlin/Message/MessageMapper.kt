@@ -9,21 +9,21 @@ import java.time.OffsetDateTime
 
 
 fun Message.toMessageDto() = MessageDto(
-    this.id,
-    this.title,
-    this.description,
-    this.dateSend.toString(),
-    this.dateRead.toString(),
-    this.category,
-    this.from.toUserDto()
+    id = this.id,
+    title = this.title,
+    description = this.description,
+    dateSend = this.dateSend.toString(),
+    dateRead = this.dateRead.toString(),
+    category = this.category,
+    from = this.from.toUserDto()
 )
 
 fun MessageDto.toMessage() = Message(
-    this.id ?: "",
-    this.title ?: "",
-    this.description ?: "",
-    OffsetDateTime.parse(this.dateSend),
-    OffsetDateTime.parse(this.dateRead),
-    this.category ?: "",
-    this.from?.toUser() ?: User()
+    id = this.id ?: "",
+    title = this.title ?: "",
+    description = this.description ?: "",
+    dateSend = OffsetDateTime.parse(this.dateSend),
+    dateRead = OffsetDateTime.parse(this.dateRead),
+    category = this.category ?: "",
+    from = this.from?.toUser() ?: User()
 )

@@ -6,19 +6,19 @@ import java.time.OffsetDateTime
 
 
 fun Ad.toAdDto() = AdDto(
-    this.id,
-    this.title,
-    this.description,
-    this.photo,
-    this.dateBegin.toString(),
-    this.dateEnd.toString()
+    id = this.id,
+    title = this.title,
+    description = this.description,
+    photo = this.photo,
+    dateBegin = this.dateBegin.toString(),
+    dateEnd = this.dateEnd.toString()
 )
 
 fun AdDto.toAd() = Ad(
-    this.id ?: "",
-    this.title ?: "",
-    this.description ?: "",
-    this.photo ?: mutableListOf(),
-    OffsetDateTime.parse(this.dateBegin),
-    OffsetDateTime.parse(this.dateEnd)
+    id = this.id ?: "",
+    title = this.title ?: "",
+    description = this.description ?: "",
+    photo = this.photo ?: mutableListOf(),
+    dateBegin = OffsetDateTime.parse(this.dateBegin),
+    dateEnd = OffsetDateTime.parse(this.dateEnd)
 )

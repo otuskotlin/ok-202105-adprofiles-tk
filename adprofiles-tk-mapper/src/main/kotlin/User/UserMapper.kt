@@ -2,6 +2,7 @@ package User
 
 import models.User
 import ru.tk.adprofiles.kmp.transport.models.UserDto
+import java.time.LocalDate
 import java.time.OffsetDateTime
 
 fun User.toUserDto() = UserDto(
@@ -24,7 +25,7 @@ fun UserDto.toUser() = User(
     name = this.name?: "",
     surname = this.surname?: "",
     secondName = this.secondName?: "",
-    birthday = OffsetDateTime.parse(this.birthday),
+    birthday = LocalDate.parse(this.birthday),
     registrationDate = OffsetDateTime.parse(this.registrationDate),
     photo = this.photo?:mutableListOf(),
     city = this.city?: ""

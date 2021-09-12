@@ -1,6 +1,7 @@
 package models
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.LocalDate
 import java.time.OffsetDateTime
 
 data class User (
@@ -17,7 +18,7 @@ data class User (
     @field:JsonProperty("secondName")
     var secondName: String = "",
     @field:JsonProperty("birthday")
-    var birthday: OffsetDateTime = OffsetDateTime.now(),
+    var birthday: LocalDate = LocalDate.now(),
     @field:JsonProperty("registrationDate")
     var registrationDate: OffsetDateTime = OffsetDateTime.now(),
     /* Url фотографии пользователя */
