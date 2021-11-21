@@ -1,14 +1,22 @@
 package ru.adprofiles.repo
 
-import Ad.toAdDto
-import models.Ad
+import context.MpContext
+import model.Ad
 
 class AdCrud {
-    fun getAd(id: String) = Ad(id = id, title = "get").toAdDto()
-    fun updateAd(ad: Ad) = ad.apply { title = "update" }.toAdDto()
-    fun createAd(ad: Ad) = ad.apply {
-        id = id
-        title = "create"
-    }.toAdDto()
-    fun deleteAd(id: String) = Ad(id = id, title = "delete").toAdDto()
+    fun getAd(context: MpContext) = context.apply {
+        ad = Ad(id = "id", title = "get")
+    }
+
+    fun updateAd(context: MpContext) = context.apply {
+        ad = Ad(id = "id", title = "update")
+    }
+
+    fun createAd(context: MpContext) = context.apply {
+        ad = Ad(id = "id", title = "create")
+    }
+
+    fun deleteAd(context: MpContext) = context.apply {
+        ad = Ad(id = "id", title = "delete")
+    }
 }

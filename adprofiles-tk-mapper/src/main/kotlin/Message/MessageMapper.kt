@@ -2,8 +2,8 @@ package Message
 
 import User.toUser
 import User.toUserDto
-import models.Message
-import models.User
+import model.Message
+import model.User
 import ru.tk.adprofiles.kmp.transport.models.MessageDto
 import java.time.OffsetDateTime
 

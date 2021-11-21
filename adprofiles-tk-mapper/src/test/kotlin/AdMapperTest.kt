@@ -1,6 +1,6 @@
 import Ad.toAd
 import Ad.toAdDto
-import models.Ad
+import model.Ad
 import ru.tk.adprofiles.kmp.transport.models.AdDto
 import java.time.Clock
 import java.time.Instant
