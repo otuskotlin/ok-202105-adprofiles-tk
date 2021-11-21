@@ -1,6 +1,6 @@
 package Ad
 
-import models.Ad
+import model.Ad
 import ru.tk.adprofiles.kmp.transport.models.AdDto
 import java.time.OffsetDateTime
 

@@ -1,6 +1,6 @@
 package User
 
-import models.User
+import model.User
 import ru.tk.adprofiles.kmp.transport.models.UserDto
 import java.time.LocalDate
 import java.time.OffsetDateTime
