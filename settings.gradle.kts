@@ -18,4 +18,15 @@ pluginManagement{
 
 
 include("common")
-include("adprofiles-transport-main-openapi")
+include("adprofiles-tk-mappings")
+include("adprofiles-tk-app-ktor")
+include("adprofiles-tk-logics")
+include("adprofiles-tk-stubs")
+include("adprofiles-tk-validation")
+include("adprofiles-tk-common-cor")
+include("adprofiles-tk-repo-inmemory")
+include("adprofiles-tk-repo-test")
+include("adprofiles-tk-service-openapi")
+include("adprofiles-tk-transport-openapi")
+include("adprofiles-tk-common-cor")
+include("adprofiles-tk-rabbit")

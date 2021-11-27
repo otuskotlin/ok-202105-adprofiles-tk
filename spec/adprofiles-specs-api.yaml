@@ -180,7 +180,7 @@ components:
         firsName:
           type: string
           description: Имя пользователя
-        second:
+        secondName:
           type: string
           description: Фамилия пользователя
         role:
