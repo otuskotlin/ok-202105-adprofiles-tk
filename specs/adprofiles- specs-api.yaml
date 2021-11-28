@@ -1,0 +1,181 @@
+openapi: 3.0.3
+
+info:
+  title: AdDto profile
+  description: 'Профили обьявлений. Профиль содержит информацию о пользователе. Адаптировать профиль для службы частных объявлений.'
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:8090
+
+tags:
+  - name: ad
+    description: Эндпоинты для работы с обьявлениями
+  - name: profile
+    description: Эндпоинты для работы с пользователями
+  - name: message
+    description: Эндпоинты для работы с сообщениями пользователей
+
+paths:
+  /ad/{id}:
+    get:
+      summary: Получение обьявления
+      operationId: getAdById
+      tags:
+        - ad
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: '123456'
+      responses:
+        200:
+          description: Обьявление
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdDto'
+        404:
+          description: Не удалось найти обьявление по переданному идентификатору
+    delete:
+      summary: Удаление обьявления
+      operationId: deleteAdById
+      tags:
+       - ad
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: '123456'
+      responses:
+        200:
+          description: Удаленное обьявление
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdDto'
+        404:
+          description: Не удалось найти обьявление по переданному идентификатору
+
+  /ad:
+    post:
+      summary: Добавление обьявления
+      operationId: createAdDt
+      tags:
+        - ad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdDto'
+      responses:
+        200:
+          description: Добавленное обьявление
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdDto'
+    put:
+      summary: Оюновление обьявления
+      operationId: updateAd
+      tags:
+        - ad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdDto'
+      responses:
+        200:
+          description: Обновленное обьявление
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdDto'
+        404:
+          description: Не удалось найти обьявление
+
+components:
+  schemas:
+    AdDto:
+      type: object
+      description: Обьявление
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          description: Заголовок обьявления
+        description:
+          type: string
+          description: Описание обьявления
+        photo:
+          type: array
+          items:
+            type: string
+          description: Url фотографии
+        dateBegin:
+          type: string
+          description: Дата публикации
+        dateEnd:
+          type: string
+          description: Дата снятия обьявления
+        from:
+          $ref: '#/components/schemas/UserDto'
+
+    MessageDto:
+      type: object
+      description: Сообщение пользователя
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          description: Заголовок сообщения
+        description:
+          type: string
+          description: Описание сообщения
+        dateSend:
+          type: string
+          description: Дата отправки
+        dateRead:
+          type: string
+          description: Дата прочтения
+        category:
+          type: string
+          description: Категория
+        from:
+          $ref: '#/components/schemas/UserDto'
+
+    UserDto:
+      type: object
+      description: Пользователь
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        secondName:
+          type: string
+        birthday:
+          type: string
+        registrationDate:
+          type: string
+        photo:
+          type: array
+          items:
+            type: string
+          description: Url фотографии пользователя
+        city:
+          type: string
+
