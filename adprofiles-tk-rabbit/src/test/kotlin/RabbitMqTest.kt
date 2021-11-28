@@ -1,19 +1,23 @@
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.rabbitmq.client.CancelCallback
 import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.DeliverCallback
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
-import main.RabbitConfig
-import main.RabbitController
-import main.RabbitDirectProcessor
+import logics.ProfileCrud
+import org.testcontainers.containers.RabbitMQContainer
+import rabbit.RabbitConfig
+import rabbit.RabbitController
+import rabbit.RabbitDirectProcessor
+import ru.tk.adprofiles.openapi.models.BaseDebugRequest
+import ru.tk.adprofiles.openapi.models.CreateProfileRequest
+import ru.tk.adprofiles.openapi.models.CreateProfileResponse
+import ru.tk.adprofiles.openapi.models.CreateableProfile
+import services.ProfileService
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import org.testcontainers.containers.RabbitMQContainer
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper
-import ru.adprofiles.service.AdService
-import ru.tk.adprofiles.kmp.transport.models.AdDto
 
 internal class RabbitMqTest {
 
@@ -23,7 +27,14 @@ internal class RabbitMqTest {
         const val exchange = "test-exchange"
         const val queue = "test-queue"
         val container by lazy {
+//            Этот образ предназначен для дебагинга, он содержит панель управления на порту httpPort
+//            RabbitMQContainer("rabbitmq:3-management").apply {
+//            Этот образ минимальный и не содержит панель управления
             RabbitMQContainer("rabbitmq:latest").apply {
+//                withExchange(exchangeIn, "fanout")
+//                withQueue(queueIn, false, true, null)
+//                withBinding(exchangeIn, queueIn)
+//                withExposedPorts(5672, 15672)
                 withUser("guest", "guest")
                 start()
             }
@@ -37,7 +48,8 @@ internal class RabbitMqTest {
                 port = rabbitMqTestPort
             )
         }
-        val service = AdService()
+        val crud = ProfileCrud()
+        val service = ProfileService(crud)
         val processor by lazy {
             RabbitDirectProcessor(
                 config = config,
@@ -81,7 +93,7 @@ internal class RabbitMqTest {
                 }
                 channel.basicConsume(queueOut, true, deliverCallback, CancelCallback { })
 
-                channel.basicPublish(exchange, keyIn, null, mapper.writeValueAsBytes(AdDto(id = "id",title = "create")))
+                channel.basicPublish(exchange, keyIn, null, mapper.writeValueAsBytes(boltCreate))
 
                 runBlocking {
                     withTimeoutOrNull(250L) {
@@ -92,12 +104,25 @@ internal class RabbitMqTest {
                 }
 
                 println("RESPONSE: $responseJson")
-                val response = mapper.readValue(responseJson, AdDto::class.java)
-                val expected = AdDto(id = "id",title = "create")
-                assertEquals(expected.id, response.id)
-                assertEquals(expected.title, response.title)
+                val response = mapper.readValue(responseJson, CreateProfileResponse::class.java)
+                val expected = ProfileStub.getModel()
+                assertEquals(expected.firsName, response.createdProfile?.firsName)
+                assertEquals(expected.secondName, response.createdProfile?.secondName)
 
             }
         }
+    }
+
+    private val boltCreate = with(ProfileStub.getModel()){
+        CreateProfileRequest(
+            createProfile = CreateableProfile(
+                firsName = firsName,
+                secondName = secondName
+            ),
+            debug = BaseDebugRequest(
+                mode = BaseDebugRequest.Mode.STUB,
+                stubCase = BaseDebugRequest.StubCase.SUCCESS,
+            )
+        )
     }
 }

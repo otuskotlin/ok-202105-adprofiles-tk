@@ -1,0 +1,443 @@
+openapi: 3.0.3
+
+info:
+  title: ProfileDto profile
+  description: 'Профили обьявлений. Профиль содержит информацию о пользователе.
+  Адаптировать профиль для службы частных объявлений.'
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:8090
+
+tags:
+  - name: profile
+    description: Эндпоинты для работы с пользователями
+
+paths:
+  /profile/init:
+    post:
+      tags:
+        - profile
+      summary: Получить статус при инициализации
+      operationId: initProfile
+      requestBody:
+        description: Объект запроса для инициализации при старте приложения
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitProfileRequest'
+        required: true
+      responses:
+        200:
+          description: all responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitProfileResponse'
+  /profile/create:
+    post:
+      tags:
+        - profile
+      summary: Создать пользователя
+      operationId: createProfile
+      requestBody:
+        description: Объект запроса для создания пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProfileRequest'
+        required: true
+      responses:
+        200:
+          description: all responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateProfileResponse'
+  /profile/read:
+    post:
+      tags:
+        - profile
+      summary: Получить информацию об пользователе
+      operationId: readProfile
+      requestBody:
+        description: Объект запроса для получения информации о пользователе
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadProfileRequest'
+        required: true
+      responses:
+        200:
+          description: all responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadProfileResponse'
+  /profile/update:
+    post:
+      tags:
+        - profile
+      summary: Обновить пользователя
+      operationId: updateProfile
+      requestBody:
+        description: Объект запроса для обновления пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+        required: true
+      responses:
+        200:
+          description: all responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProfileResponse'
+  /profile/delete:
+    post:
+      tags:
+        - profile
+      summary: Удалить пользователя
+      operationId: deleteProfile
+      requestBody:
+        description: Объект запроса для удаления пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteProfileRequest'
+        required: true
+      responses:
+        200:
+          description: all responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteProfileResponse'
+
+components:
+  schemas:
+
+    BaseMessage:
+      type: object
+      description: Базовый класс как для запросов, так и для ответов
+      properties:
+        messageType:
+          type: string
+          title: Дискриминатор
+          description: Дискриминатор, содержащий тип класса сообщения и использующийся для десериализации
+      discriminator:
+        propertyName: messageType
+
+    BaseRequest:
+      description: Базовый класс для всех запросов
+      allOf:
+        - type: object
+          properties:
+            requestId:
+              type: string
+
+    BaseResponse:
+      description: Базовый класс для всех ответов
+      allOf:
+        - type: object
+          properties:
+            requestId:
+              type: string
+            result:
+              type: string
+              enum:
+                - success
+                - error
+            errors:
+              type: array
+              items:
+                $ref: '#/components/schemas/RequestError'
+
+    RequestError:
+      type: object
+      description: Описание ошибки обработки запроса
+      properties:
+        message:
+          type: string
+        field:
+          type: string
+
+    ProfileRole:
+      type: string
+      description: 'Роль покупатель или продавец'
+      enum:
+        - salesman
+        - customer
+
+    CreateableProfile:
+      type: object
+      description: Структура с данными для запроса о созадии пользователя
+      properties:
+        id:
+          type: string
+          description: Идентификатор пользователя
+        firsName:
+          type: string
+          description: Имя пользователя
+        secondName:
+          type: string
+          description: Фамилия пользователя
+        role:
+          $ref: '#/components/schemas/ProfileRole'
+
+
+    UpdateableProfile:
+      description: Структура для данных для запроса об обновлении пользователя
+      allOf:
+        - $ref: '#/components/schemas/CreateableProfile'
+        - type: object
+          properties:
+            id:
+              type: string
+              description: Идентификатор объявления
+
+    ResponseProfile:
+      description: Структура, описывающая пользователя в ответе
+      allOf:
+        - $ref: '#/components/schemas/UpdateableProfile'
+        - type: object
+          properties:
+            permissions:
+              type: array
+              uniqueItems: true
+              items:
+                $ref: '#/components/schemas/ProfilePermissions'
+
+    ProfilePermissions:
+      type: string
+      description: Доступы к операциям с объявлениями
+      enum:
+        - read
+        - update
+        - delete
+        - create
+
+    BaseDebugRequest:
+      type: object
+      description: Структура с описанием отладочных параметров запроса
+      properties:
+        mode:
+          type: string
+          default: prod
+          enum:
+            - prod
+            - test
+            - stub
+        stubCase:
+          type: string
+          enum:
+            - success
+            - database_error
+
+    BasePaginatedRequest:
+      type: object
+      description: Структура с описанием запрашиваемой страницы в запросах списков
+      properties:
+        size:
+          type: integer
+          description: Размер запрашиваемой страницы
+          format: int32
+        lastId:
+          type: string
+          description: Идентификатор последнего объекта предыдущей страницы
+
+    BasePaginatedResponse:
+      type: object
+      description: Структура с описанием страницы в ответе
+      properties:
+        size:
+          type: integer
+          description: Размер запрашиваемой страницы
+          format: int32
+        lastId:
+          type: string
+          description: Идентификатор последнего объекта предыдущей страницы
+        position:
+          type: string
+          enum:
+            - first
+            - middle
+            - last
+
+    InitProfileRequest:
+      description: Структура для запроса начального состояния при старте вэб-клиента
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+
+    InitProfileResponse:
+      description: Структура для ответа с начальным состоянием при старте вэб-клиента
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+
+
+    CreateProfileRequest:
+      description: Структура для запроса создания нового пользователя
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            createProfile:
+              $ref: '#/components/schemas/CreateableProfile'
+            debug:
+              allOf:
+                - $ref: '#/components/schemas/BaseDebugRequest'
+                - type: object
+                  properties:
+                    stub:
+                      type: string
+                      enum:
+                        - success
+                        - emptyTitle
+                        - databaseError
+
+    CreateProfileResponse:
+      description: Структура для ответа на запрос о создании пользователя
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            createdProfile:
+              $ref: '#/components/schemas/ResponseProfile'
+
+
+
+    ReadProfileRequest:
+      description: Структура для получения пользователя
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            readProfileId:
+              type: string
+            debug:
+              allOf:
+                - $ref: '#/components/schemas/BaseDebugRequest'
+                - type: object
+                  properties:
+                    stub:
+                      type: string
+                      enum:
+                        - success
+                        - emptyId
+                        - databaseError
+
+    ReadProfileResponse:
+      description: Структура для ответа на запрос с информацией о пользователе
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            readProfile:
+              $ref: '#/components/schemas/ResponseProfile'
+
+    UpdateProfileRequest:
+      description: Структура для запроса обновления существующего пользователя
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            createProfile:
+              $ref: '#/components/schemas/UpdateableProfile'
+            debug:
+              allOf:
+                - $ref: '#/components/schemas/BaseDebugRequest'
+                - type: object
+                  properties:
+                    stub:
+                      type: string
+                      enum:
+                        - success
+                        - emptyTitle
+                        - databaseError
+
+    UpdateProfileResponse:
+      description: Структура для ответа на запрос с информацией о пользователе
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            updatedProfile:
+              $ref: '#/components/schemas/ResponseProfile'
+
+    DeleteProfileRequest:
+      description: Структура для запроса удаления пользователя
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseRequest'
+        - type: object
+          properties:
+            deleteProfileId:
+              type: string
+            debug:
+              allOf:
+                - $ref: '#/components/schemas/BaseDebugRequest'
+                - type: object
+                  properties:
+                    stub:
+                      type: string
+                      enum:
+                        - success
+                        - emptyId
+                        - databaseError
+
+    DeleteProfileResponse:
+      description: Структура для ответа на запрос об удалении пользователя
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            deletedProfile:
+              $ref: '#/components/schemas/ResponseProfile'
+
+#Логирование
+    CommonLogModel:
+      description: Модель логирования
+      allOf:
+        - type: object
+          properties:
+            messageId:
+              type: string
+            messageTime:
+              type: string
+            logId:
+              type: string
+            source:
+              type: string
+            marketplace:
+              $ref: '#/components/schemas/MpLogModel'
+            errors:
+              type: array
+              items:
+                $ref: '#/components/schemas/RequestError'
+
+    MpLogModel:
+      description: Модель логирования
+      allOf:
+        - type: object
+          properties:
+            requestProfileId:
+              type: string
+            requestProfile:
+              $ref: '#/components/schemas/ResponseProfile'
+            responseProfile:
+              $ref: '#/components/schemas/ResponseProfile'
+            responseProfiles:
+              type: array
+              items:
+                $ref: '#/components/schemas/ResponseProfile'
