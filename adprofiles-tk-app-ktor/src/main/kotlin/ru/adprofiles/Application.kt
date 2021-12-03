@@ -1,8 +1,7 @@
-package ru.otus.otuskotlin.marketplace
+package ru
 
 import configs.AppKtorConfig
 import features.restFeature
-import features.wsFeature
 import io.ktor.application.*
 import io.ktor.routing.*
 
@@ -16,5 +15,4 @@ fun Application.module(config: AppKtorConfig = AppKtorConfig()) {
     install(Routing)
 
     restFeature(config)
-    wsFeature(config)
 }

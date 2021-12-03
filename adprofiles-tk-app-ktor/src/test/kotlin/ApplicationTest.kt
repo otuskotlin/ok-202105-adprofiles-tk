@@ -1,10 +1,9 @@
-package ru.otus.otuskotlin.marketplace
+package ru
 
-import io.ktor.application.*
+import configs.AppKtorConfig
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import org.junit.Test
-import configs.AppKtorConfig
 import kotlin.test.assertEquals
 
 class ApplicationTest {

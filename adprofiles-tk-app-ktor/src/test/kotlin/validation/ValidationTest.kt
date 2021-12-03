@@ -4,7 +4,7 @@ import configs.AppKtorConfig
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import org.junit.Test
-import ru.otus.otuskotlin.marketplace.module
+import ru.module
 import ru.tk.adprofiles.openapi.models.CreateProfileResponse
 import test.ktor.utils.Utils
 import kotlin.test.assertEquals

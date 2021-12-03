@@ -25,7 +25,6 @@ fun Application.restFeature(config: AppKtorConfig) {
         method(HttpMethod.Put)
         method(HttpMethod.Delete)
         method(HttpMethod.Patch)
-        header(HttpHeaders.Authorization)
         header("MyCustomHeader")
         allowCredentials = true
         anyHost() // TODO remove
@@ -44,20 +43,18 @@ fun Application.restFeature(config: AppKtorConfig) {
             call.respondText("Hello, world!")
         }
         // routing profile
-        authenticate("auth-jwt") {
-            route("profile") {
-                post("create") {
-                    call.createProfile(profileService)
-                }
-                post("read") {
-                    call.readProfile(profileService)
-                }
-                post("update") {
-                    call.updateProfile(profileService)
-                }
-                post("delete") {
-                    call.deleteProfile(profileService)
-                }
+        route("profile") {
+            post("create") {
+                call.createProfile(profileService)
+            }
+            post("read") {
+                call.readProfile(profileService)
+            }
+            post("update") {
+                call.updateProfile(profileService)
+            }
+            post("delete") {
+                call.deleteProfile(profileService)
             }
         }
         // Static feature. Try to access `/static/ktor-logo.png`

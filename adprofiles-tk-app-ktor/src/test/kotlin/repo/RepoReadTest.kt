@@ -7,7 +7,7 @@ import io.ktor.http.*
 import io.ktor.server.testing.*
 import org.junit.Test
 import repo.inmemory.RepoProfileInMemory
-import ru.otus.otuskotlin.marketplace.module
+import ru.module
 import ru.tk.adprofiles.openapi.models.BaseDebugRequest
 import ru.tk.adprofiles.openapi.models.ProfileRole
 import ru.tk.adprofiles.openapi.models.ReadProfileRequest
