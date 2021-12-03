@@ -29,7 +29,7 @@ class RepoReadTest {
             )
             module(config)
         }) {
-            handleRequest(HttpMethod.Post, "/ad/read") {
+            handleRequest(HttpMethod.Post, "/profile/read") {
                 addHeader(HttpHeaders.ContentType, ContentType.Application.Json.withCharset(Charsets.UTF_8).toString())
 
                 val request = ReadProfileRequest(
