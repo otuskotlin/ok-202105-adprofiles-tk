@@ -18,7 +18,6 @@ data class MpContext(
     var dbProfile: ProfileModel = ProfileModel(),
     var permitted: Boolean = false,
     var profileRepo: IRepoProfile = IRepoProfile.NONE,
-    val userSession: IUserSession<*> = IUserSession.Companion.EmptySession,
 
     var responseProfile: ProfileModel = ProfileModel(),
     var responseProfiles: MutableList<ProfileModel> = mutableListOf(),
